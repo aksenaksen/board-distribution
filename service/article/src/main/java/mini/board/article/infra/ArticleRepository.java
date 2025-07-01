@@ -20,7 +20,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 //    개선 방식:
 //    1. 서브쿼리에서 board_id 조건 + article_id 정렬 후 limit/offset → 이때 `article_id`만 조회하므로 covering index로 처리됨
 //    2. 이후 메인 쿼리에서 해당 article_id로 article 테이블과 join하여 실제 row fetch
-//    → 인덱스 → PK로 바로 접근 가능하여 성능 개선
+//    → 인덱스 → PK로 바로 접근 가능하여 성능 개선 (1초내외)
 
     @Query(
             value = "select article.article_id, article.title, article.content, article.board_id, article.writer_id, " +
