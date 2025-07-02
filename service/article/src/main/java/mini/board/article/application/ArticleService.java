@@ -7,7 +7,9 @@ import mini.board.article.dto.request.ArticleUpdateRequest;
 import mini.board.article.dto.response.ArticlePageResponse;
 import mini.board.article.dto.response.ArticleResponse;
 import mini.board.article.entity.Article;
+import mini.board.article.entity.BoardArticleCount;
 import mini.board.article.infra.ArticleRepository;
+import mini.board.article.infra.BoardArticleCountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +20,8 @@ import java.util.List;
 public class ArticleService {
     private final Snowflake snowflake = new Snowflake();
     private final ArticleRepository articleRepository;
-
+    private final BoardArticleCountRepository baordArticleCountRepository;
+    private final BoardArticleCountRepository boardArticleCountRepository;
 
     @Transactional
     public ArticleResponse create(ArticleCreateRequest request){
@@ -28,6 +31,13 @@ public class ArticleService {
 //      primary key 생성 전략: Snowflake 알고리즘 사용
 //      → 분산 시스템 환경에서도 중복 없는 고유 ID를 생성할 수 있고,
 //         정렬 가능하며 시간 기반으로 추적도 가능해 ID로 정렬 시 성능 이점이 있음
+
+        int result = boardArticleCountRepository.increase(article.getBoardId());
+        if(result == 0){
+            boardArticleCountRepository.save(
+                    BoardArticleCount.init(request.getBoardId(), 1L)
+            );
+        }
 
         return ArticleResponse.from(article);
     }
@@ -45,7 +55,10 @@ public class ArticleService {
 
     @Transactional
     public void delete(Long articleId){
-        articleRepository.deleteById(articleId);
+        Article article = articleRepository.findById(articleId).orElseThrow();
+        articleRepository.delete(article);
+        boardArticleCountRepository.decrease(article.getBoardId());
+
     }
 
 
@@ -68,5 +81,11 @@ public class ArticleService {
         return response.stream()
                 .map(ArticleResponse::from)
                 .toList();
+    }
+
+    public Long count(Long boardId) {
+        return boardArticleCountRepository.findById(boardId)
+                .map(BoardArticleCount::getArticleCount)
+                .orElse(0L);
     }
 }

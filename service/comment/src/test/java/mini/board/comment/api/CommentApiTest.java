@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mini.board.comment.dto.request.CommentCreateRequest;
+import mini.board.comment.dto.request.CommentCreateRequestV2;
 import mini.board.comment.dto.response.CommentPageResponse;
 import mini.board.comment.dto.response.CommentResponse;
 import org.junit.jupiter.api.Test;
@@ -131,6 +132,34 @@ public class CommentApiTest {
             System.out.println("comment.getCommentId() = " + comment.getCommentId());
         }
     }
+    CommentResponse create(CommentCreateRequestV2 request) {
+        return restClient.post()
+                .uri("/v2/comments")
+                .body(request)
+                .retrieve()
+                .body(CommentResponse.class);
+    }
+
+    @Test
+    void countTest() {
+        CommentResponse commentResponse = create(new CommentCreateRequestV2(2L, "my comment1", null, 1L));
+
+        Long count1 = restClient.get()
+                .uri("/v2/comments/articles/{articleId}/count", 2L)
+                .retrieve()
+                .body(Long.class);
+        System.out.println("count1 = " + count1); // 1
+
+        restClient.delete()
+                .uri("/v2/comments/{commentId}", commentResponse.getCommentId())
+                .retrieve();
+
+        Long count2 = restClient.get()
+                .uri("/v2/comments/articles/{articleId}/count", 2L)
+                .retrieve()
+                .body(Long.class);
+        System.out.println("count2 = " + count2); // 0
+    }
 
 
 
@@ -147,5 +176,13 @@ public class CommentApiTest {
         private Long writerId;
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class CommentCreateRequestV2 {
+        private Long articleId;
+        private String content;
+        private String parentPath;
+        private Long writerId;
+    }
 
 }
