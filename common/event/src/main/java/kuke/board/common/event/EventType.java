@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @RequiredArgsConstructor
 public enum EventType {
-        ARTICLE_CRATED(ArticleCreatedEventPayload.class, Topic.BOARD_ARTICLE),
+        ARTICLE_CREATED(ArticleCreatedEventPayload.class, Topic.BOARD_ARTICLE),
         ARTICLE_UPDATED(ArticleUpdatedEventPayload.class, Topic.BOARD_ARTICLE),
         ARTICLE_DELETED(ArticleDeletedEventPayload.class, Topic.BOARD_ARTICLE),
         COMMENT_CREATED(CommentCreatedEventPayload.class, Topic.BOARD_COMMENT),
