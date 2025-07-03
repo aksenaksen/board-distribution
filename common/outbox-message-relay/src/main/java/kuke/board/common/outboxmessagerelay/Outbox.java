@@ -1,4 +1,4 @@
-package kuke.board.common.oubboxmessagerelay;
+package kuke.board.common.outboxmessagerelay;
 
 import jakarta.persistence.*;
 import kuke.board.common.event.EventType;

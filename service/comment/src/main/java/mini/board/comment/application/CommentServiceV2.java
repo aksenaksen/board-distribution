@@ -1,5 +1,8 @@
 package mini.board.comment.application;
 
+import kuke.board.common.event.EventType;
+import kuke.board.common.event.payload.CommentCreatedEventPayload;
+import kuke.board.common.outboxmessagerelay.OutboxEventPublisher;
 import kuke.board.common.snowflake.Snowflake;
 import lombok.RequiredArgsConstructor;
 import mini.board.comment.dto.request.CommentCreateRequestV2;
@@ -25,6 +28,7 @@ public class CommentServiceV2 {
     private final Snowflake snowflake = new Snowflake();
     private final CommentRepositoryV2 commentRepository;
     private final ArticleCommentCountRepository articleCommentCountRepository;
+    private final OutboxEventPublisher outboxEventPublisher;
 
     @Transactional
     public CommentResponse create(CommentCreateRequestV2 request){
@@ -48,6 +52,20 @@ public class CommentServiceV2 {
                     ArticleCommentCount.init(request.getArticleId(), 1L)
             );
         }
+
+        outboxEventPublisher.publish(
+                EventType.COMMENT_CREATED,
+                CommentCreatedEventPayload.builder()
+                        .articleId(comment.getArticleId())
+                        .createdAt(comment.getCreatedAt())
+                        .commentId(comment.getCommentId())
+                        .content(comment.getContent())
+                        .path(comment.getCommentPath().getPath())
+                        .deleted(comment.getDeleted())
+                        .writerId(comment.getWriterId())
+                        .build(),
+                comment.getArticleId()
+        );
         return CommentResponse.from(comment);
     }
 
@@ -78,6 +96,20 @@ public class CommentServiceV2 {
                     else{
                         delete(comment);
                     }
+
+                    outboxEventPublisher.publish(
+                            EventType.COMMENT_DELETED,
+                            CommentCreatedEventPayload.builder()
+                                    .articleId(comment.getArticleId())
+                                    .createdAt(comment.getCreatedAt())
+                                    .commentId(comment.getCommentId())
+                                    .content(comment.getContent())
+                                    .path(comment.getCommentPath().getPath())
+                                    .deleted(comment.getDeleted())
+                                    .writerId(comment.getWriterId())
+                                    .build(),
+                            comment.getArticleId()
+                    );
                 });
     }
 

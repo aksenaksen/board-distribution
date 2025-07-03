@@ -1,4 +1,4 @@
-package kuke.board.common.oubboxmessagerelay;
+package kuke.board.common.outboxmessagerelay;
 
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;

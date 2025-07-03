@@ -1,6 +1,5 @@
-package kuke.board.common.oubboxmessagerelay;
+package kuke.board.common.outboxmessagerelay;
 
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +20,7 @@ import java.util.concurrent.Executors;
 
 @EnableAsync
 @Configuration
-@ComponentScan("kuke.board.common.oubboxmessagerelay")
+@ComponentScan("kuke.board.common.outboxmessagerelay")
 @EnableScheduling
 public class MessageRelayConfig {
     @Value("${spring.kafka.bootstrap-servers}")
@@ -48,6 +47,7 @@ public class MessageRelayConfig {
         return executor;
     }
 
+    // 중앙저장소에 ping 보내고 못보낸 이벤트 or 들어온지 10초이상된 미전송 이벤트들 처리
     @Bean
     public Executor messageRelayPublishPendingEventExecutor() {
         return Executors.newSingleThreadScheduledExecutor();

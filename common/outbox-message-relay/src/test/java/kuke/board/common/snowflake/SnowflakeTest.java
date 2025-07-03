@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import org.junit.jupiter.api.Test;
 
 class SnowflakeTest {
-	kuke.board.common.oubboxmessagerelay.Snowflake snowflake = new kuke.board.common.oubboxmessagerelay.Snowflake();
+	kuke.board.common.outboxmessagerelay.Snowflake snowflake = new kuke.board.common.outboxmessagerelay.Snowflake();
 
 	@Test
 	void nextIdTest() throws ExecutionException, InterruptedException {
