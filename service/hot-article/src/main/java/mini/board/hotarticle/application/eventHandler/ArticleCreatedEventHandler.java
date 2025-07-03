@@ -27,7 +27,7 @@ public class ArticleCreatedEventHandler implements EventHandler<ArticleCreatedEv
 
     @Override
     public boolean supports(Event<ArticleCreatedEventPayload> event) {
-        return EventType.ARTICLE_CREATED==event.getType();
+        return EventType.ARTICLE_CREATED == event.getType();
     }
 
     @Override

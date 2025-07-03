@@ -6,6 +6,7 @@ import kuke.board.common.event.EventType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mini.board.hotarticle.application.eventHandler.EventHandler;
+import mini.board.hotarticle.application.response.HotArticleResponse;
 import mini.board.hotarticle.client.ArticleClient;
 import mini.board.hotarticle.infra.HotArticleListRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class HotArticleService {
 
     public void handleEvent(Event<EventPayload> event){
         EventHandler<EventPayload> eventHandler = findEventHandler(event);
-        if(eventHandler != null){
+        if(eventHandler == null){
             return;
         }
 
@@ -35,6 +36,14 @@ public class HotArticleService {
             hotArticleScoreUpdater.update(event, eventHandler);
         }
 
+    }
+
+    public List<HotArticleResponse> readAll(String dateStr){
+        return hotArticleListRepository.readAll(dateStr)
+                .stream()
+                .map(articleClient::read)
+                .map(HotArticleResponse::from)
+                .toList();
     }
 
 
