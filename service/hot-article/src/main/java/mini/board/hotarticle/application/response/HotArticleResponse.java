@@ -1,11 +1,13 @@
 package mini.board.hotarticle.application.response;
 
 import lombok.Getter;
+import lombok.ToString;
 import mini.board.hotarticle.client.ArticleClient;
 
 import java.time.LocalDateTime;
 
 @Getter
+@ToString
 public class HotArticleResponse {
     private Long articleId;
     private String title;

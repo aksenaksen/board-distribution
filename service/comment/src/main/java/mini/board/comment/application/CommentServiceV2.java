@@ -63,6 +63,7 @@ public class CommentServiceV2 {
                         .path(comment.getCommentPath().getPath())
                         .deleted(comment.getDeleted())
                         .writerId(comment.getWriterId())
+                        .articleCommentCount(count(comment.getArticleId()))
                         .build(),
                 comment.getArticleId()
         );
@@ -107,6 +108,7 @@ public class CommentServiceV2 {
                                     .path(comment.getCommentPath().getPath())
                                     .deleted(comment.getDeleted())
                                     .writerId(comment.getWriterId())
+                                    .articleCommentCount(comment.getArticleId())
                                     .build(),
                             comment.getArticleId()
                     );
